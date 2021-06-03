@@ -2,31 +2,17 @@ name := "spark-google-spreadsheets"
 
 organization := "com.github.potix2"
 
-scalaVersion := "2.11.12"
+scalaVersion := "2.12.10"
 
-crossScalaVersions := Seq("2.11.12")
+crossScalaVersions := Seq("2.12.10")
 
-version := "0.6.4-SNAPSHOT"
+version := "0.6.4"
 
-spName := "potix2/spark-google-spreadsheets"
-
-spAppendScalaVersion := true
-
-spIncludeMaven := true
-
-spIgnoreProvided := true
-
-sparkVersion := "2.3.3"
-
-val testSparkVersion = settingKey[String]("The version of Spark to test against.")
-
-testSparkVersion := sys.props.get("spark.testVersion").getOrElse(sparkVersion.value)
-
-sparkComponents := Seq("sql")
+val sparkVersion = "3.0.1"
 
 libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-api" % "1.7.5" % "provided",
-  "org.scalatest" %% "scalatest" % "2.2.1" % "test",
+  "org.scalatest" %% "scalatest" % "3.0.8" % "test",
   ("com.google.api-client" % "google-api-client" % "1.22.0").
     exclude("com.google.guava", "guava-jdk5"),
   "com.google.oauth-client" % "google-oauth-client-jetty" % "1.22.0",
@@ -34,8 +20,8 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-core" % testSparkVersion.value % "test" force(),
-  "org.apache.spark" %% "spark-sql" % testSparkVersion.value % "test"  force(),
+  "org.apache.spark" %% "spark-core" % sparkVersion % "provided",
+  "org.apache.spark" %% "spark-sql" % sparkVersion % "provided",
   "org.scala-lang" % "scala-library" % scalaVersion.value % "compile",
   "javax.servlet" % "javax.servlet-api" % "3.1.0" % "compile"
 )
@@ -54,6 +40,9 @@ releasePublishArtifactsAction := PgpKeys.publishSigned.value
 publishArtifact in Test := false
 
 pomIncludeRepository := { _ => false }
+
+//publishMavenStyle := true
+//publishTo := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.m2/repository")))
 
 publishTo := {
   val nexus = "https://oss.sonatype.org/"
@@ -93,6 +82,5 @@ releaseProcess := Seq[ReleaseStep](
   publishArtifacts,
   setNextVersion,
   commitNextVersion,
-  pushChanges,
-  releaseStepTask(spPublish)
+  pushChanges
 )
